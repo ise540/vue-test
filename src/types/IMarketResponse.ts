@@ -1,20 +1,20 @@
 export interface IMarketResponse {
-    Error: string,
-    Id: number,
-    Success: boolean,
-    Value: IMarketValue
+  Error: string;
+  Id: number;
+  Success: boolean;
+  Value: IMarketValue;
 }
 
 export interface IMarketValue {
-    Goods: IMarketGoods[]
+  Goods: IMarketGoods[];
 }
 
 export interface IMarketGoods {
-    B: boolean,
-    C: number,
-    CV: null,
-    G: number,
-    P: number,
-    Pl: null,
-    T: number
+  B: boolean;
+  C: number;
+  CV: null;
+  G: number;
+  P: number;
+  Pl: null;
+  T: number;
 }

@@ -1,8 +1,10 @@
 <template>
   <tr class="cart_item">
     <td>{{ fullName }}</td>
-    <td><input class="cart_input" v-model="cartItem.count" @input="setCount" />
-      шт.</td>
+    <td>
+      <input class="cart_input" v-model="cartItem.count" @input="setCount" />
+      шт.
+    </td>
     <td>{{ fullPrice }} руб./шт.</td>
     <td><button class="delete_button" @click="deleteItem">Удалить</button></td>
   </tr>
@@ -18,29 +20,27 @@ interface Props {
 }
 const { cartItem } = defineProps<Props>();
 
-
-
 const store = useStore();
 
 const setCount = () => {
-  cartItem.count = Number(cartItem.count.toString().replace(/([^0-9])+/i, ""))
-  store.commit("setCount", { itemId: cartItem.market.id, value: cartItem.count })
-}
+  cartItem.count = Number(cartItem.count.toString().replace(/([^0-9])+/i, ""));
+  store.commit("setCount", {
+    itemId: cartItem.market.id,
+    value: cartItem.count,
+  });
+};
 
 const deleteItem = () => {
   store.commit("removeFromCart", cartItem.market.id);
-}
-
+};
 
 const fullName = computed(
   () => cartItem.market.group + ". " + cartItem.market.name
 );
 const fullPrice = computed(() => {
   const value = cartItem.market.currency * store.getters.getCurrentExchange;
-  return parseFloat(value.toFixed(2))
-}
-);
-
+  return parseFloat(value.toFixed(2));
+});
 </script>
 
 <style scoped>

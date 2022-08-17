@@ -13,7 +13,7 @@ const store = createStore<State>({
     return {
       cart: [],
       fullPrice: 0,
-      currentExchange: 20
+      currentExchange: 20,
     };
   },
   mutations: {
@@ -44,15 +44,16 @@ const store = createStore<State>({
       return state.cart;
     },
     getFullPrice: (state) => {
-      state.fullPrice = state.cart.reduce((previous, item) => previous + item.market.currency * item.count, 0)
-      return state.fullPrice
+      state.fullPrice = state.cart.reduce(
+        (previous, item) => previous + item.market.currency * item.count,
+        0
+      );
+      return state.fullPrice;
     },
     getCurrentExchange: (state) => {
       return state.currentExchange;
     },
-  }
-
+  },
 });
 
 export default store;
-

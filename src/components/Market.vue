@@ -14,7 +14,6 @@ import { computed } from "vue";
 import { IMarket } from "@/types/IMarket";
 import { useStore } from "vuex";
 
-
 interface Props {
   market: IMarket;
 }
@@ -25,7 +24,9 @@ const marketDescription = computed(() => {
 });
 
 const marketPrice = computed(() => {
-  return parseFloat((store.getters.getCurrentExchange * market.currency).toFixed(2));
+  return parseFloat(
+    (store.getters.getCurrentExchange * market.currency).toFixed(2)
+  );
 });
 
 const store = useStore();

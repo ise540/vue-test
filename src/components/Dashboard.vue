@@ -2,7 +2,6 @@
   <div class="dashboard">
     <h1 class="title">Маркет</h1>
     <Loader v-if="dashboardData.length == 0" />
-
     <Group
       v-else
       v-for="(group, index) in getGroups"
@@ -19,8 +18,7 @@ import Loader from "./Loader.vue";
 import { IMarketResponse } from "../types/IMarketResponse";
 import { INamesResponse } from "../types/INamesResponse";
 import { IMarket } from "@/types/IMarket";
-import { ref, unref, computed, onMounted, watchEffect, watch } from "vue";
-import { useStore } from "vuex";
+import { ref, unref, computed, onMounted, watch } from "vue";
 
 const groupObject = ref<INamesResponse | undefined>(undefined);
 const dashboardData = ref<IMarket[]>([]);
