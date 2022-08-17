@@ -2,34 +2,55 @@
   <div class="dashboard">
     <h1 class="title">Маркет</h1>
     <Loader v-if="dashboardData.length == 0" />
-    <Group v-else v-for="(group, index) in getGroups" :key="index" :title="group" :markets="getData(group)" />
+
+    <Group
+      v-else
+      v-for="(group, index) in getGroups"
+      :key="index"
+      :title="group"
+      :markets="getData(group)"
+    />
   </div>
 </template>
 
 <script setup lang="ts">
 import Group from "@/components/Group.vue";
-import groupData from "@/assets/names.json" 
+import Loader from "./Loader.vue";
 import { IMarketResponse } from "../types/IMarketResponse";
-import { INamesResponse } from "../types/INamesResponse"
+import { INamesResponse } from "../types/INamesResponse";
 import { IMarket } from "@/types/IMarket";
-import { ref, unref, computed } from "vue"
-import Loader from "./Loader.vue"
+import { ref, unref, computed, onMounted, watchEffect, watch } from "vue";
+import { useStore } from "vuex";
 
-const dashboardData = ref<IMarket[]>([])
+const groupObject = ref<INamesResponse | undefined>(undefined);
+const dashboardData = ref<IMarket[]>([]);
 
-const getJson = async () => {
-  const rawData = await import("../assets/data.json");
-  return rawData;
-}
+onMounted(async () => {
+  const response = await fetch("./names.json");
+  groupObject.value = (await response.json()) as INamesResponse;
+});
+
+const getGroups = computed(() => {
+  if (!groupObject.value) return [];
+  let groups: string[] = [];
+  const entries = Object.entries(groupObject.value);
+  entries.forEach((entrie) => groups.push(entrie[1].G));
+  return groups;
+});
+
+const getJsonData = async () => {
+  const response = await fetch("./data.json");
+  return (await response.json()) as IMarketResponse;
+};
 
 const getParsedData = (json: IMarketResponse) => {
   const parsedData = json.Value.Goods.map((item) => {
     return {
       currency: item.C,
-      group: getGroupName(item.G),
+      group: getGroupName(item.G.toString()) ?? "1",
       id: item.T,
       remain: item.P,
-      name: getItemName(item.G, item.T),
+      name: getItemName(item.G.toString(), item.T.toString()) ?? "",
     };
   });
   return parsedData;
@@ -39,38 +60,31 @@ function getData(group: string) {
   return unref(dashboardData).filter((item) => item.group === group);
 }
 
-function getGroupName(number: number) {
-  const group = Object.entries(groupData).find(item => item[0] === number.toString())
-  return group![1].G
+function getGroupName(groupId: string) {
+  if (groupObject.value) return groupObject.value[groupId].G;
 }
 
-function getItemName(groupNumber: number, itemNumber: number) {
-  const item = Object.entries(groupData).find(([key, item]) => key === groupNumber.toString())
-  const object = Object.entries(item![1].B).find(item => item[0] === itemNumber.toString())
-  return object?.[1].N;
-}
+function getItemName(groupId: string, itemId: string) {
+  if (groupObject.value) {
+    const group = groupObject.value[groupId];
+    const itemName = group.B[itemId].N;
 
-const getGroups = computed(() => {
-  let groups = [];
-  const obj: { [index: string]: any } = groupData;
-  for (let item in groupData) {
-    groups.push(groupData[item].G);
+    return itemName;
   }
-
-  return groups;
-})
+}
 
 const recieveData = async () => {
-  const json = await getJson()
-  const parsedData = getParsedData(json)
-  dashboardData.value = parsedData;
-}
+  const json = await getJsonData();
+  const parsedData = getParsedData(json);
+  if (dashboardData.value) dashboardData.value = parsedData;
+
+  console.log("Updated");
+};
+
+watch(groupObject, recieveData);
 
 recieveData();
-
-setInterval(recieveData
-  , 3000);
-
+setInterval(recieveData, 15000);
 </script>
 
 <style>

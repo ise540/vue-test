@@ -37,7 +37,7 @@ const fullName = computed(
 );
 const fullPrice = computed(() => {
   const value = cartItem.market.currency * store.getters.getCurrentExchange;
-  return value.toFixed(2)
+  return parseFloat(value.toFixed(2))
 }
 );
 

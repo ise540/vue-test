@@ -16,7 +16,7 @@ const store = useStore()
 
 const fullPrice = computed(() => {
   const value = store.getters.getFullPrice * store.getters.getCurrentExchange;
-  return value.toFixed(2)
+  return parseFloat(value.toFixed(2))
 })
 
 

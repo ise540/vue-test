@@ -4,7 +4,7 @@
       {{ marketDescription }}
     </p>
     <div class="market_currency">
-      <span>{{ market.currency }}</span>
+      <span>{{ marketPrice }}</span>
     </div>
   </div>
 </template>
@@ -24,6 +24,10 @@ const marketDescription = computed(() => {
   return market.name + " (" + market.remain + ")";
 });
 
+const marketPrice = computed(() => {
+  return parseFloat((store.getters.getCurrentExchange * market.currency).toFixed(2));
+});
+
 const store = useStore();
 const addItem = () => store.commit("addToCart", market);
 </script>
@@ -41,7 +45,7 @@ const addItem = () => store.commit("addToCart", market);
 }
 .market_currency {
   background-color: #cecccc;
-  width: 60px;
+  width: 80px;
   text-align: center;
 }
 </style>
