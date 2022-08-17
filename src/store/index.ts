@@ -1,34 +1,33 @@
+import { ICartItem } from "@/types/ICartItem";
 import { IMarket } from "@/types/IMarket";
-import Vue from "vue";
-import Vuex, { createStore } from "vuex";
-
-export interface ICartItem {
-  market: IMarket;
-  count: number;
-}
+import { createStore } from "vuex";
 
 export interface State {
   cart: ICartItem[];
+  fullPrice: number;
+  currentExchange: number;
 }
 
 const store = createStore<State>({
   state() {
     return {
       cart: [],
+      fullPrice: 0,
+      currentExchange: 20
     };
   },
   mutations: {
-    addToCart(state, payload: IMarket) {
+    addToCart: (state, payload: IMarket) => {
       if (!state.cart.find((item) => item.market.id == payload.id))
         state.cart.push({ market: payload, count: 1 });
     },
 
-    removeFromCart(state, payload: number) {
+    removeFromCart: (state, payload: number) => {
       const newState = state.cart.filter((item) => item.market.id !== payload);
       state.cart = newState;
     },
 
-    setNumber(state, payload: { itemId: number; value: number }) {
+    setCount: (state, payload: { itemId: number; value: number }) => {
       const currentIndex = state.cart.findIndex(
         (item) => item.market.id === payload.itemId
       );
@@ -36,12 +35,24 @@ const store = createStore<State>({
         state.cart[currentIndex].count = payload.value;
       }
     },
-  },
-  getters: {
-    getState(state) {
-      return state.cart;
+    setCurrentExchange: (state, payload: number) => {
+      state.currentExchange = payload;
     },
   },
+  getters: {
+    getCart: (state) => {
+      return state.cart;
+    },
+    getFullPrice: (state) => {
+      state.fullPrice = state.cart.reduce((previous, item) => previous + item.market.currency * item.count, 0)
+      return state.fullPrice
+    },
+    getCurrentExchange: (state) => {
+      return state.currentExchange;
+    },
+  }
+
 });
 
 export default store;
+

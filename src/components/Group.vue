@@ -5,27 +5,24 @@
   </div>
 </template>
 
-<script lang="ts">
+<script setup lang="ts">
 import Market from "@/components/Market.vue";
-import { defineComponent, PropType } from "vue";
 import type { IMarket } from "@/types/IMarket";
-export default defineComponent({
-  components: {
-    Market,
-  },
-  props: {
-    title: String,
-    markets: { type: Array as PropType<IMarket[]>, requered: true },
-  },
-});
+
+interface Props {
+  title: string,
+  markets: IMarket[]
+}
+
+const { title, markets } = defineProps<Props>();
+
 </script>
 
 <style>
 .group_title {
-    background-color: #dae8f1;
-    color: #1e2752;
-    font-size: 20px;
-    padding: 5px;
+  background-color: #dae8f1;
+  color: #1e2752;
+  font-size: 20px;
+  padding: 5px;
 }
-
 </style>

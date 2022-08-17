@@ -1,5 +1,5 @@
 <template>
-  <div @click="addToCart" class="market">
+  <div @click="addItem" class="market">
     <p>
       {{ marketDescription }}
     </p>
@@ -14,6 +14,7 @@ import { computed } from "vue";
 import { IMarket } from "@/types/IMarket";
 import { useStore } from "vuex";
 
+
 interface Props {
   market: IMarket;
 }
@@ -24,7 +25,7 @@ const marketDescription = computed(() => {
 });
 
 const store = useStore();
-const addToCart = () => store.commit("addToCart", market);
+const addItem = () => store.commit("addToCart", market);
 </script>
 
 <style>
